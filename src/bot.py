@@ -1,18 +1,42 @@
+from datetime import date
+from datetime import timedelta
+import time
+from time import sleep
 import tweepy
+import holidays
+import os
+from os import environ
 
-# Setting up the authentication and linking account.
-auth = tweepy.OAuthHandler("wughahxX55YCnvHJfsIT4ilaG", "B2hmBpTvydj9MMXg9O8ZwjURCSpICzRsZCfPjuRluztLaSJQaL")
-auth.set_access_token("1329514293310726144-2gcsKAopFLJX8peU73zDckqUTmsKvf", "eSXFwjWJttwrTbaDtrdN3veXZ9FOhkdp75170cydq4xGD")
+# Secure api keys
+auth = tweepy.OAuthHandler(os.environ.get('CONSUMER_KEY'), os.environ.get('CONSUMER_SECRET'))
+auth.set_access_token(os.environ.get('ACCESS_TOKEN'), os.environ.get('ACCESS_TOKEN_SECRET'))
 api = tweepy.API(auth)
 
-# Printing friends <- This was taken from the introductory documentation.
-user = api.get_user("Bot3Hangman")
-print(user.screen_name)
-print(user.followers_count)
-for friend in user.friends():
-    print(friend.screen_name)
+# Aggregate holidays around the world into allHolidays
+allHolidays = holidays.AR() + holidays.AU() + holidays.AT() + holidays.BE()
+allHolidays = allHolidays + holidays.CA() + holidays.CO() + holidays.CZ() + holidays.DK()
+allHolidays = allHolidays + holidays.FI() + holidays.FRA() + holidays.DE() + holidays.HU()
+allHolidays = allHolidays + holidays.IT() + holidays.JP() + holidays.MX() + holidays.NL()
+allHolidays = allHolidays + holidays.NZ() + holidays.PL() + holidays.PT()
+allHolidays = allHolidays + holidays.PTE()+ holidays.SI() + holidays.SK() + holidays.ZA()
+allHolidays = allHolidays + holidays.ES() + holidays.CH() + holidays.UK() + holidays.US()
 
-# Making a sample tweet
+# Get the appropriate tweet for the day.
+def initializeTweet(today):
+    isTodayHoliday = today in allHolidays
+    if(isTodayHoliday == False):
+        tweet = "Unfortunately, today isn't a holiday."
+    else:
+        tweet = "Today is " + str(allHolidays.get(today)) + "!"
+
+    return tweet
 
 
-# 
+#temp = date.today()
+while(True):
+    tweet = initializeTweet(date.today())
+    api.update_status(tweet)
+    #print(str(temp) + " -> " + str(tweet))
+    #temp = temp + timedelta(days=1)
+    time.sleep(60 * 60 * 24)
+    
