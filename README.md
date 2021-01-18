@@ -6,3 +6,4 @@ Otherwise it tweets the holiday from an aggregated list of holidays (with recogn
 Deployed on Heroku to run once daily.
 
 This project served as my introduction to APIs and the python programming language.
+Twitter bot name: Bot3Hangman (whatdayisit)
